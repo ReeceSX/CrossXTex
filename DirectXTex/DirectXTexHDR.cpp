@@ -580,32 +580,10 @@ HRESULT DirectX::GetMetadataFromHDRFile(const wchar_t* szFile, TexMetadata& meta
     if (!szFile)
         return E_INVALIDARG;
 
-#if (_WIN32_WINNT >= _WIN32_WINNT_WIN8)
-    ScopedHandle hFile(safe_handle(CreateFile2(szFile, GENERIC_READ, FILE_SHARE_READ, OPEN_EXISTING, nullptr)));
-#else
-    ScopedHandle hFile(safe_handle(CreateFileW(szFile, GENERIC_READ, FILE_SHARE_READ, nullptr, OPEN_EXISTING,
-        FILE_FLAG_SEQUENTIAL_SCAN, nullptr)));
-#endif
-    if (!hFile)
-    {
-        return HRESULT_FROM_WIN32(GetLastError());
-    }
-
-    // Get the file size
-    FILE_STANDARD_INFO fileInfo;
-    if (!GetFileInformationByHandleEx(hFile.get(), FileStandardInfo, &fileInfo, sizeof(fileInfo)))
-    {
-        return HRESULT_FROM_WIN32(GetLastError());
-    }
-
-    // File is too big for 32-bit allocation, so reject read (4 GB should be plenty large enough for a valid HDR file)
-    if (fileInfo.EndOfFile.HighPart > 0)
-    {
-        return HRESULT_FROM_WIN32(ERROR_FILE_TOO_LARGE);
-    }
+    ScopedReadFile hFile(szFile);
 
     // Need at least enough data to fill the standard header to be a valid HDR
-    if (fileInfo.EndOfFile.LowPart < sizeof(g_Signature))
+    if (szFile.GetLength() < sizeof(g_Signature))
     {
         return E_FAIL;
     }
@@ -615,7 +593,7 @@ HRESULT DirectX::GetMetadataFromHDRFile(const wchar_t* szFile, TexMetadata& meta
     DWORD bytesRead = 0;
     if (!ReadFile(hFile.get(), header, std::min<DWORD>(sizeof(header), fileInfo.EndOfFile.LowPart), &bytesRead, nullptr))
     {
-        return HRESULT_FROM_WIN32(GetLastError());
+        return E_FAIL;
     }
 
     size_t offset;
@@ -860,14 +838,14 @@ HRESULT DirectX::LoadFromHDRFile(const wchar_t* szFile, TexMetadata* metadata, S
 #endif
     if (!hFile)
     {
-        return HRESULT_FROM_WIN32(GetLastError());
+        return E_FAIL;
     }
 
     // Get the file size
     FILE_STANDARD_INFO fileInfo;
     if (!GetFileInformationByHandleEx(hFile.get(), FileStandardInfo, &fileInfo, sizeof(fileInfo)))
     {
-        return HRESULT_FROM_WIN32(GetLastError());
+        return E_FAIL;
     }
 
     // File is too big for 32-bit allocation, so reject read (4 GB should be plenty large enough for a valid HDR file)
@@ -892,7 +870,7 @@ HRESULT DirectX::LoadFromHDRFile(const wchar_t* szFile, TexMetadata* metadata, S
     DWORD bytesRead = 0;
     if (!ReadFile(hFile.get(), temp.get(), fileInfo.EndOfFile.LowPart, &bytesRead, nullptr))
     {
-        return HRESULT_FROM_WIN32(GetLastError());
+        return E_FAIL;
     }
 
     if (bytesRead != fileInfo.EndOfFile.LowPart)
@@ -1055,7 +1033,7 @@ HRESULT DirectX::SaveToHDRFile(const Image& image, const wchar_t* szFile) noexce
 #endif
     if (!hFile)
     {
-        return HRESULT_FROM_WIN32(GetLastError());
+        return E_FAIL;
     }
 
     auto_delete_file delonfail(hFile.get());
@@ -1082,7 +1060,7 @@ HRESULT DirectX::SaveToHDRFile(const Image& image, const wchar_t* szFile) noexce
         DWORD bytesWritten;
         if (!WriteFile(hFile.get(), blob.GetBufferPointer(), bytesToWrite, &bytesWritten, nullptr))
         {
-            return HRESULT_FROM_WIN32(GetLastError());
+            return E_FAIL;
         }
 
         if (bytesWritten != bytesToWrite)
@@ -1108,7 +1086,7 @@ HRESULT DirectX::SaveToHDRFile(const Image& image, const wchar_t* szFile) noexce
         DWORD bytesWritten;
         if (!WriteFile(hFile.get(), header, headerLen, &bytesWritten, nullptr))
         {
-            return HRESULT_FROM_WIN32(GetLastError());
+            return E_FAIL;
         }
 
         if (bytesWritten != headerLen)
@@ -1124,7 +1102,7 @@ HRESULT DirectX::SaveToHDRFile(const Image& image, const wchar_t* szFile) noexce
 
             if (!WriteFile(hFile.get(), rgbe, static_cast<DWORD>(rowPitch), &bytesWritten, nullptr))
             {
-                return HRESULT_FROM_WIN32(GetLastError());
+                return E_FAIL;
             }
 
             if (bytesWritten != rowPitch)
@@ -1154,7 +1132,7 @@ HRESULT DirectX::SaveToHDRFile(const Image& image, const wchar_t* szFile) noexce
 
                 if (!WriteFile(hFile.get(), enc, static_cast<DWORD>(encSize), &bytesWritten, nullptr))
                 {
-                    return HRESULT_FROM_WIN32(GetLastError());
+                    return E_FAIL;
                 }
 
                 if (bytesWritten != encSize)
@@ -1164,7 +1142,7 @@ HRESULT DirectX::SaveToHDRFile(const Image& image, const wchar_t* szFile) noexce
             {
                 if (!WriteFile(hFile.get(), rgbe, static_cast<DWORD>(rowPitch), &bytesWritten, nullptr))
                 {
-                    return HRESULT_FROM_WIN32(GetLastError());
+                    return E_FAIL;
                 }
 
                 if (bytesWritten != rowPitch)

@@ -20,13 +20,21 @@ option(BC_USE_OPENMP "Build with OpenMP support" ON)
 
 option(ENABLE_CODE_ANALYSIS "Use Static Code Analysis on build" OFF)
 
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
+
+set(CMAKE_CXX_FLAGS "-fpermissive")
 
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin/CMake")
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin/CMake")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin/CMake")
+
+if (WIN32)
+    set (PLATFORM_FLAGS )
+else()
+    set (PLATFORM_FLAGS _DXTX_NOWIN)
+endif()
 
 set(LIBRARY_SOURCES
     DirectXTex/BC.h
@@ -37,12 +45,11 @@ set(LIBRARY_SOURCES
     DirectXTex/DirectXTexP.h
     DirectXTex/filters.h
     DirectXTex/scoped.h
+    
     DirectXTex/BC.cpp
     DirectXTex/BC4BC5.cpp
     DirectXTex/BC6HBC7.cpp
-    DirectXTex/BCDirectCompute.cpp
-    DirectXTex/DirectXTexCompress.cpp
-    DirectXTex/DirectXTexCompressGPU.cpp
+
     DirectXTex/DirectXTexConvert.cpp
     DirectXTex/DirectXTexDDS.cpp
     DirectXTex/DirectXTexFlipRotate.cpp
@@ -54,12 +61,14 @@ set(LIBRARY_SOURCES
     DirectXTex/DirectXTexPMAlpha.cpp
     DirectXTex/DirectXTexResize.cpp
     DirectXTex/DirectXTexTGA.cpp
-    DirectXTex/DirectXTexUtil.cpp
-    DirectXTex/DirectXTexWIC.cpp)
+    DirectXTex/DirectXTexUtil.cpp)
 
-set(SHADER_SOURCES
-    DirectXTex/Shaders/BC6HEncode.hlsl
-    DirectXTex/Shaders/BC7Encode.hlsl)
+if (WIN32)
+   set(LIBRARY_SOURCES ${LIBRARY_SOURCES} DirectXTex/DirectXTexCompressGPU.cpp)
+   set(LIBRARY_SOURCES ${LIBRARY_SOURCES} DirectXTex/BCDirectCompute.cpp)
+   set(LIBRARY_SOURCES ${LIBRARY_SOURCES} DirectXTex/DirectXTexWIC.cpp)
+endif()
+
 
 if(BUILD_DX11)
    set(LIBRARY_SOURCES ${LIBRARY_SOURCES} DirectXTex/DirectXTexD3D11.cpp)
@@ -68,20 +77,34 @@ if(BUILD_DX12)
    set(LIBRARY_SOURCES ${LIBRARY_SOURCES} DirectXTex/DirectXTexD3D12.cpp)
 endif()
 
-add_library(${PROJECT_NAME} STATIC ${LIBRARY_SOURCES} DirectXTex/Shaders/Compiled/BC6HEncode_EncodeBlockCS.inc)
+set(SHADER_SOURCES
+    DirectXTex/Shaders/BC6HEncode.hlsl
+    DirectXTex/Shaders/BC7Encode.hlsl)
 
-add_custom_command(
-    OUTPUT "${PROJECT_SOURCE_DIR}/DirectXTex/Shaders/Compiled/BC6HEncode_EncodeBlockCS.inc"
-    MAIN_DEPENDENCY "${PROJECT_SOURCE_DIR}/DirectXTex/Shaders/CompileShaders.cmd"
-    DEPENDS ${SHADER_SOURCES}
-    COMMENT "Generating HLSL shaders..."
-    COMMAND "CompileShaders.cmd"
-    WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}/DirectXTex/Shaders"
-    USES_TERMINAL)
+if (WIN32)
+    add_library(${PROJECT_NAME} STATIC ${LIBRARY_SOURCES} DirectXTex/Shaders/Compiled/BC6HEncode_EncodeBlockCS.inc)
+
+    add_custom_command(
+        OUTPUT "${PROJECT_SOURCE_DIR}/DirectXTex/Shaders/Compiled/BC6HEncode_EncodeBlockCS.inc"
+        MAIN_DEPENDENCY "${PROJECT_SOURCE_DIR}/DirectXTex/Shaders/CompileShaders.cmd"
+        DEPENDS ${SHADER_SOURCES}
+        COMMENT "Generating HLSL shaders..."
+        COMMAND "CompileShaders.cmd"
+        WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}/DirectXTex/Shaders"
+        USES_TERMINAL)
+
+else()
+
+    add_library(${PROJECT_NAME} STATIC ${LIBRARY_SOURCES})
+
+endif()
+
 
 source_group(${PROJECT_NAME} REGULAR_EXPRESSION DirectXTex/*.*)
 
 target_include_directories(${PROJECT_NAME} PUBLIC DirectXTex)
+target_include_directories(${PROJECT_NAME} PUBLIC DirectXMath)
+target_include_directories(${PROJECT_NAME} PUBLIC PlatformSupport)
 
 if (${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.16")
     target_precompile_headers(${PROJECT_NAME} PRIVATE DirectXTex/DirectXTexP.h)
@@ -130,9 +153,11 @@ if(MSVC)
     endif()
 endif()
 
+# TODO FIX ME 
 if ( CMAKE_CXX_COMPILER_ID MATCHES "Clang" )
     set(WarningsLib "-Wpedantic" "-Wextra")
     target_compile_options(${PROJECT_NAME} PRIVATE ${WarningsLib})
+    target_compile_options(${PROJECT_NAME} PRIVATE "-fdeclspec")
 
     # OpenMP is not supported for clang for Windows by default
 
@@ -173,6 +198,7 @@ if ( CMAKE_CXX_COMPILER_ID MATCHES "MSVC" )
     target_compile_options(texdiag PRIVATE ${WarningsEXE})
 endif()
 
+target_compile_definitions(${PROJECT_NAME} PRIVATE ${PLATFORM_FLAGS})
 if(WIN32)
     target_compile_definitions(${PROJECT_NAME} PRIVATE _UNICODE UNICODE)
     target_compile_definitions(texassemble PRIVATE _UNICODE UNICODE _WIN32_WINNT=0x0601)

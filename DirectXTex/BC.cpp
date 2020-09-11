@@ -412,7 +412,7 @@ namespace
         HDRColorA Error[NUM_PIXELS_PER_BLOCK];
 
         if (flags & BC_FLAGS_DITHER_RGB)
-            memset(Error, 0x00, NUM_PIXELS_PER_BLOCK * sizeof(HDRColorA));
+            std::memset(Error, 0x00, NUM_PIXELS_PER_BLOCK * sizeof(HDRColorA));
 
         size_t i;
         for (i = 0; i < NUM_PIXELS_PER_BLOCK; ++i)
@@ -598,7 +598,7 @@ namespace
         // Encode colors
         uint32_t dw = 0;
         if (flags & BC_FLAGS_DITHER_RGB)
-            memset(Error, 0x00, NUM_PIXELS_PER_BLOCK * sizeof(HDRColorA));
+            std::memset(Error, 0x00, NUM_PIXELS_PER_BLOCK * sizeof(HDRColorA));
 
         for (i = 0; i < NUM_PIXELS_PER_BLOCK; ++i)
         {
@@ -1010,7 +1010,7 @@ void DirectX::D3DXEncodeBC3(uint8_t *pBC, const XMVECTOR *pColor, uint32_t flags
         EncodeSolidBC1(&pBC3->dxt1, Color);
         pBC3->alpha[0] = 0x00;
         pBC3->alpha[1] = 0x00;
-        memset(pBC3->bitmap, 0x00, 6);
+        std::memset(pBC3->bitmap, 0x00, 6);
     }
 #endif
 
@@ -1022,7 +1022,7 @@ void DirectX::D3DXEncodeBC3(uint8_t *pBC, const XMVECTOR *pColor, uint32_t flags
     {
         pBC3->alpha[0] = 0xff;
         pBC3->alpha[1] = 0xff;
-        memset(pBC3->bitmap, 0x00, 6);
+        std::memset(pBC3->bitmap, 0x00, 6);
         return;
     }
 
@@ -1043,7 +1043,7 @@ void DirectX::D3DXEncodeBC3(uint8_t *pBC, const XMVECTOR *pColor, uint32_t flags
     {
         pBC3->alpha[0] = bAlphaA;
         pBC3->alpha[1] = bAlphaB;
-        memset(pBC3->bitmap, 0x00, 6);
+        std::memset(pBC3->bitmap, 0x00, 6);
         return;
     }
 
@@ -1088,7 +1088,7 @@ void DirectX::D3DXEncodeBC3(uint8_t *pBC, const XMVECTOR *pColor, uint32_t flags
     float fScale = (fStep[0] != fStep[1]) ? (fSteps / (fStep[1] - fStep[0])) : 0.0f;
 
     if (flags & BC_FLAGS_DITHER_A)
-        memset(fError, 0x00, NUM_PIXELS_PER_BLOCK * sizeof(float));
+        std::memset(fError, 0x00, NUM_PIXELS_PER_BLOCK * sizeof(float));
 
     for (size_t iSet = 0; iSet < 2; iSet++)
     {

@@ -74,6 +74,28 @@
 #define WIN32_LEAN_AND_MEAN
 #endif
 
+
+#include <malloc.h>
+#include <memory>
+#include <vector>
+#include <time.h>
+#include <stdlib.h>
+#include <cstdlib>
+#include <search.h>
+#include <algorithm>
+#include <cstdint>
+#include <cstring>
+#include <functional>
+#include <string.h>
+#include <cstdlib>
+#include <filesystem>
+#include <ios>
+#include <fstream>
+	
+#include <assert.h>
+
+#if !defined(_DXTX_NOWIN)
+
 #pragma warning(push)
 #pragma warning(disable : 4005)
 #define NOMINMAX
@@ -107,28 +129,31 @@
 
 #define _XM_NO_XMVECTOR_OVERLOADS_
 
-#include <DirectXMath.h>
-#include <DirectXPackedVector.h>
-#include <assert.h>
-
-#include <malloc.h>
-#include <memory>
-
-#include <vector>
-
-#include <time.h>
-#include <stdlib.h>
-#include <search.h>
-
 #include <Ole2.h>
-
-#include "DirectXTex.h"
-
 #include <wincodec.h>
 
 #include <wrl\client.h>
 
+#else // !defined(_DXTX_NOWIN)
+
+#if defined(__clang__)
+#include "ClangCommon.hpp"
+#endif
+#include "Win32Public.hpp"
+#include "MSVCStubs.hpp"
+
+#endif
+
+#include "StdFS.hpp"
+
+#define _DXTEX_PRIVATE
+#include "DirectXTex.h"
+
+#include <DirectXMath.h>
+#include <DirectXPackedVector.h>
+
 #include "scoped.h"
+
 
 #define XBOX_DXGI_FORMAT_R10G10B10_7E3_A2_FLOAT DXGI_FORMAT(116)
 #define XBOX_DXGI_FORMAT_R10G10B10_6E4_A2_FLOAT DXGI_FORMAT(117)
@@ -155,6 +180,7 @@ namespace DirectX
 
     TEX_FILTER_FLAGS __cdecl _CheckWICColorSpace(_In_ const GUID& sourceGUID, _In_ const GUID& targetGUID) noexcept;
 
+#if !defined(_DXTX_NOWIN)
     inline WICBitmapDitherType __cdecl _GetWICDither(_In_ TEX_FILTER_FLAGS flags) noexcept
     {
         static_assert(TEX_FILTER_DITHER == 0x10000, "TEX_FILTER_DITHER* flag values don't match mask");
@@ -235,6 +261,7 @@ namespace DirectX
         }
     }
 
+#endif
 
     //---------------------------------------------------------------------------------
     // Image helper functions

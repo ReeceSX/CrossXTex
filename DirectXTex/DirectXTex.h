@@ -8,14 +8,18 @@
 //
 // http://go.microsoft.com/fwlink/?LinkId=248926
 //-------------------------------------------------------------------------------------
-
 #pragma once
 
-#include <algorithm>
-#include <cstdint>
-#include <functional>
-#include <vector>
+ // NOTE: we have already included these in the precompiled header.
+ //       including these here breaks ports when sal.h conflicts with libcxx stl and crt
+#if !defined(_DXTEX_PRIVATE)
+    #include <algorithm>
+    #include <cstdint>
+    #include <functional>
+    #include <vector>
+#endif
 
+#if !defined(_DXTX_NOWIN)
 #if !defined(__d3d11_h__) && !defined(__d3d11_x_h__) && !defined(__d3d12_h__) && !defined(__d3d12_x_h__) && !defined(__XBOX_D3D12_X__)
 #ifdef _GAMING_XBOX_SCARLETT
 #include <d3d12_xs.h>
@@ -27,16 +31,18 @@
 #include <d3d11_1.h>
 #endif
 #endif
+#endif
 
 #include <DirectXMath.h>
 
+#if !defined(_DXTX_NOWIN)
 #include <OCIdl.h>
+#endif
 
 #define DIRECTX_TEX_VERSION 190
 
 struct IWICImagingFactory;
 struct IWICMetadataQueryReader;
-
 
 namespace DirectX
 {
@@ -410,6 +416,8 @@ namespace DirectX
     HRESULT __cdecl SaveToTGAFile(_In_ const Image& image, _In_z_ const wchar_t* szFile, _In_opt_ const TexMetadata* metadata = nullptr) noexcept;
 
     // WIC operations
+
+    #if !defined(_DXTX_NOWIN)
     HRESULT __cdecl LoadFromWICMemory(
         _In_reads_bytes_(size) const void* pSource, _In_ size_t size,
         _In_ WIC_FLAGS flags,
@@ -440,6 +448,7 @@ namespace DirectX
         _In_z_ const wchar_t* szFile, _In_opt_ const GUID* targetFormat = nullptr,
         _In_opt_ std::function<void __cdecl(IPropertyBag2*)> setCustomProps = nullptr);
 
+    #endif
     //---------------------------------------------------------------------------------
     // Texture conversion, resizing, mipmap generation, and block compression
 
@@ -749,7 +758,9 @@ namespace DirectX
         WIC_CODEC_ICO,              // Windows Icon (.ico)
     };
 
+#if !defined(_DXTX_NOWIN)
     REFGUID __cdecl GetWICCodec(_In_ WICCodecs codec) noexcept;
+#endif
 
     IWICImagingFactory* __cdecl GetWICFactory(bool& iswic2) noexcept;
     void __cdecl SetWICFactory(_In_opt_ IWICImagingFactory* pWIC) noexcept;

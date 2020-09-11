@@ -13,7 +13,10 @@
 
 using namespace DirectX;
 using namespace DirectX::PackedVector;
+
+#if !defined(_DXTX_NOWIN)
 using Microsoft::WRL::ComPtr;
+#endif
 
 namespace
 {
@@ -2640,7 +2643,7 @@ HRESULT DirectX::_ConvertToR16G16B16A16(const Image& srcImage, ScratchImage& ima
     if (FAILED(hr))
         return hr;
 
-    ScopedAlignedArrayXMVECTOR scanline(static_cast<XMVECTOR*>(_aligned_malloc((sizeof(XMVECTOR) * srcImage.width), 16)));
+    ScopedAlignedArrayXMVECTOR scanline(static_cast<XMVECTOR*>(AllocateVectorAligned((sizeof(XMVECTOR) * srcImage.width))));
     if (!scanline)
     {
         image.Release();
@@ -2693,7 +2696,7 @@ HRESULT DirectX::_ConvertFromR16G16B16A16(const Image& srcImage, const Image& de
     if (srcImage.width != destImage.width || srcImage.height != destImage.height)
         return E_FAIL;
 
-    ScopedAlignedArrayXMVECTOR scanline(static_cast<XMVECTOR*>(_aligned_malloc((sizeof(XMVECTOR) * srcImage.width), 16)));
+    ScopedAlignedArrayXMVECTOR scanline(static_cast<XMVECTOR*>(AllocateVectorAligned((sizeof(XMVECTOR) * srcImage.width))));
     if (!scanline)
         return E_OUTOFMEMORY;
 
@@ -4363,6 +4366,8 @@ bool DirectX::_StoreScanlineDither(
 
 namespace
 {
+    
+    #if !defined(_DXTX_NOWIN)
     //-------------------------------------------------------------------------------------
     // Selection logic for using WIC vs. our own routines
     //-------------------------------------------------------------------------------------
@@ -4573,6 +4578,8 @@ namespace
         return S_OK;
     }
 
+    #endif
+
 
     //-------------------------------------------------------------------------------------
     // Convert the source image (not using WIC)
@@ -4597,7 +4604,7 @@ namespace
         if (filter & TEX_FILTER_DITHER_DIFFUSION)
         {
             // Error diffusion dithering (aka Floyd-Steinberg dithering)
-            ScopedAlignedArrayXMVECTOR scanline(static_cast<XMVECTOR*>(_aligned_malloc((sizeof(XMVECTOR)*(width * 2 + 2)), 16)));
+            ScopedAlignedArrayXMVECTOR scanline(static_cast<XMVECTOR*>(AllocateVectorAligned((sizeof(XMVECTOR)*(width * 2 + 2)))));
             if (!scanline)
                 return E_OUTOFMEMORY;
 
@@ -4620,7 +4627,7 @@ namespace
         }
         else
         {
-            ScopedAlignedArrayXMVECTOR scanline(static_cast<XMVECTOR*>(_aligned_malloc((sizeof(XMVECTOR)*width), 16)));
+            ScopedAlignedArrayXMVECTOR scanline(static_cast<XMVECTOR*>(AllocateVectorAligned((sizeof(XMVECTOR)*width))));
             if (!scanline)
                 return E_OUTOFMEMORY;
 
@@ -4856,12 +4863,14 @@ HRESULT DirectX::Convert(
         return E_POINTER;
     }
 
+#if !defined(_DXTX_NOWIN)
     WICPixelFormatGUID pfGUID, targetGUID;
     if (UseWICConversion(filter, srcImage.format, format, pfGUID, targetGUID))
     {
         hr = ConvertUsingWIC(srcImage, pfGUID, targetGUID, filter, threshold, *rimage);
     }
     else
+#endif
     {
         hr = ConvertCustom(srcImage, filter, *rimage, threshold, 0);
     }
@@ -4920,8 +4929,14 @@ HRESULT DirectX::Convert(
         return E_POINTER;
     }
 
-    WICPixelFormatGUID pfGUID, targetGUID;
-    bool usewic = !metadata.IsPMAlpha() && UseWICConversion(filter, metadata.format, format, pfGUID, targetGUID);
+    bool usewic;
+#if !defined(_DXTX_NOWIN)
+        WICPixelFormatGUID pfGUID, targetGUID;
+        usewic =!metadata.IsPMAlpha() && UseWICConversion(filter, metadata.format, format, pfGUID, targetGUID);
+#else
+        usewic = false;
+#endif
+
 
     switch (metadata.dimension)
     {
@@ -4951,11 +4966,13 @@ HRESULT DirectX::Convert(
                 return E_FAIL;
             }
 
+#if !defined(_DXTX_NOWIN)
             if (usewic)
             {
                 hr = ConvertUsingWIC(src, pfGUID, targetGUID, filter, threshold, dst);
             }
             else
+#endif
             {
                 hr = ConvertCustom(src, filter, dst, threshold, 0);
             }
@@ -5004,11 +5021,13 @@ HRESULT DirectX::Convert(
                     return E_FAIL;
                 }
 
+#if !defined(_DXTX_NOWIN)
                 if (usewic)
                 {
                     hr = ConvertUsingWIC(src, pfGUID, targetGUID, filter, threshold, dst);
                 }
                 else
+#endif
                 {
                     hr = ConvertCustom(src, filter, dst, threshold, slice);
                 }
