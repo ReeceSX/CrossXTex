@@ -172,9 +172,8 @@ public:
         return _stream.read(reinterpret_cast<char *>(in), length) ? length : _stream.gcount();
     }
     
-    size_t Read(size_t length)
+    size_t Read(size_t length, std::vector<uint8_t> & in)
     {
-        std::vector<uint8_t> in;
         in.resize(length);
         return Read(in.data(), length);
     }
