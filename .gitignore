@@ -33,3 +33,5 @@ x64
 *.o
 /CMakeFiles/*
 /bin/*
+CMakeCache.txt
+cmake_install.cmake
