@@ -11,6 +11,10 @@
 
 #include "DirectXTexP.h"
 
+using Blob = DirectX::Blob;
+
+#if !defined(_DXTX_NOWIN)
+
 #if (defined(_XBOX_ONE) && defined(_TITLE)) || defined(_GAMING_XBOX)
 static_assert(XBOX_DXGI_FORMAT_R10G10B10_7E3_A2_FLOAT == DXGI_FORMAT_R10G10B10_7E3_A2_FLOAT, "Xbox mismatch detected");
 static_assert(XBOX_DXGI_FORMAT_R10G10B10_6E4_A2_FLOAT == DXGI_FORMAT_R10G10B10_6E4_A2_FLOAT, "Xbox mismatch detected");
@@ -32,6 +36,7 @@ using Microsoft::WRL::ComPtr;
 
 namespace
 {
+    
     //-------------------------------------------------------------------------------------
     // WIC Pixel Format Translation Data
     //-------------------------------------------------------------------------------------
@@ -145,16 +150,8 @@ bool DirectX::_DXGIToWIC(DXGI_FORMAT format, GUID& guid, bool ignoreRGBvsBGR) no
 {
     switch (format)
     {
-        case DXGI_FORMAT_R8G8B8A8_UNORM:
-        case DXGI_FORMAT_R8G8B8A8_UNORM_SRGB:
-            if (ignoreRGBvsBGR)
-            {
-                // If we are not doing conversion so don't really care about BGR vs RGB color-order,
-                // we can use the canonical WIC 32bppBGRA format which avoids an extra format conversion when using the WIC scaler
-                memcpy(&guid, &GUID_WICPixelFormat32bppBGRA, sizeof(GUID));
-            }
-            else
-            {
+        case DXGI_FORMA#endif
+
                 memcpy(&guid, &GUID_WICPixelFormat32bppRGBA, sizeof(GUID));
             }
             return true;
@@ -318,6 +315,7 @@ void DirectX::SetWICFactory(_In_opt_ IWICImagingFactory* pWIC) noexcept
         pWIC->Release();
 }
 
+#endif
 
 
 //=====================================================================================
@@ -1384,7 +1382,7 @@ DXGI_FORMAT DirectX::MakeTypelessFLOAT(DXGI_FORMAT fmt) noexcept
 //=====================================================================================
 
 _Use_decl_annotations_
-size_t TexMetadata::ComputeIndex(size_t mip, size_t item, size_t slice) const noexcept
+size_t DirectX::TexMetadata::ComputeIndex(size_t mip, size_t item, size_t slice) const noexcept
 {
     if (mip >= mipLevels)
         return size_t(-1);
@@ -1456,7 +1454,7 @@ void Blob::Release() noexcept
 {
     if (m_buffer)
     {
-        _aligned_free(m_buffer);
+        std::free(m_buffer);
         m_buffer = nullptr;
     }
 
@@ -1471,7 +1469,7 @@ HRESULT Blob::Initialize(size_t size) noexcept
 
     Release();
 
-    m_buffer = _aligned_malloc(size, 16);
+    m_buffer = std::aligned_alloc(size, 16);
     if (!m_buffer)
     {
         Release();

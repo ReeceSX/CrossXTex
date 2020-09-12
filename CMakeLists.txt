@@ -67,15 +67,16 @@ if (WIN32)
    set(LIBRARY_SOURCES ${LIBRARY_SOURCES} DirectXTex/DirectXTexCompressGPU.cpp)
    set(LIBRARY_SOURCES ${LIBRARY_SOURCES} DirectXTex/BCDirectCompute.cpp)
    set(LIBRARY_SOURCES ${LIBRARY_SOURCES} DirectXTex/DirectXTexWIC.cpp)
-endif()
 
 
-if(BUILD_DX11)
-   set(LIBRARY_SOURCES ${LIBRARY_SOURCES} DirectXTex/DirectXTexD3D11.cpp)
+    if(BUILD_DX11)
+    set(LIBRARY_SOURCES ${LIBRARY_SOURCES} DirectXTex/DirectXTexD3D11.cpp)
+    endif()
+    if(BUILD_DX12)
+    set(LIBRARY_SOURCES ${LIBRARY_SOURCES} DirectXTex/DirectXTexD3D12.cpp)
+    endif()
 endif()
-if(BUILD_DX12)
-   set(LIBRARY_SOURCES ${LIBRARY_SOURCES} DirectXTex/DirectXTexD3D12.cpp)
-endif()
+
 
 set(SHADER_SOURCES
     DirectXTex/Shaders/BC6HEncode.hlsl

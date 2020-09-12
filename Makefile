@@ -289,60 +289,6 @@ DirectXTex/DirectXTexConvert.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/DirectXTex.dir/build.make CMakeFiles/DirectXTex.dir/DirectXTex/DirectXTexConvert.cpp.s
 .PHONY : DirectXTex/DirectXTexConvert.cpp.s
 
-DirectXTex/DirectXTexD3D11.o: DirectXTex/DirectXTexD3D11.cpp.o
-
-.PHONY : DirectXTex/DirectXTexD3D11.o
-
-# target to build an object file
-DirectXTex/DirectXTexD3D11.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/DirectXTex.dir/build.make CMakeFiles/DirectXTex.dir/DirectXTex/DirectXTexD3D11.cpp.o
-.PHONY : DirectXTex/DirectXTexD3D11.cpp.o
-
-DirectXTex/DirectXTexD3D11.i: DirectXTex/DirectXTexD3D11.cpp.i
-
-.PHONY : DirectXTex/DirectXTexD3D11.i
-
-# target to preprocess a source file
-DirectXTex/DirectXTexD3D11.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/DirectXTex.dir/build.make CMakeFiles/DirectXTex.dir/DirectXTex/DirectXTexD3D11.cpp.i
-.PHONY : DirectXTex/DirectXTexD3D11.cpp.i
-
-DirectXTex/DirectXTexD3D11.s: DirectXTex/DirectXTexD3D11.cpp.s
-
-.PHONY : DirectXTex/DirectXTexD3D11.s
-
-# target to generate assembly for a file
-DirectXTex/DirectXTexD3D11.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/DirectXTex.dir/build.make CMakeFiles/DirectXTex.dir/DirectXTex/DirectXTexD3D11.cpp.s
-.PHONY : DirectXTex/DirectXTexD3D11.cpp.s
-
-DirectXTex/DirectXTexD3D12.o: DirectXTex/DirectXTexD3D12.cpp.o
-
-.PHONY : DirectXTex/DirectXTexD3D12.o
-
-# target to build an object file
-DirectXTex/DirectXTexD3D12.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/DirectXTex.dir/build.make CMakeFiles/DirectXTex.dir/DirectXTex/DirectXTexD3D12.cpp.o
-.PHONY : DirectXTex/DirectXTexD3D12.cpp.o
-
-DirectXTex/DirectXTexD3D12.i: DirectXTex/DirectXTexD3D12.cpp.i
-
-.PHONY : DirectXTex/DirectXTexD3D12.i
-
-# target to preprocess a source file
-DirectXTex/DirectXTexD3D12.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/DirectXTex.dir/build.make CMakeFiles/DirectXTex.dir/DirectXTex/DirectXTexD3D12.cpp.i
-.PHONY : DirectXTex/DirectXTexD3D12.cpp.i
-
-DirectXTex/DirectXTexD3D12.s: DirectXTex/DirectXTexD3D12.cpp.s
-
-.PHONY : DirectXTex/DirectXTexD3D12.s
-
-# target to generate assembly for a file
-DirectXTex/DirectXTexD3D12.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/DirectXTex.dir/build.make CMakeFiles/DirectXTex.dir/DirectXTex/DirectXTexD3D12.cpp.s
-.PHONY : DirectXTex/DirectXTexD3D12.cpp.s
-
 DirectXTex/DirectXTexDDS.o: DirectXTex/DirectXTexDDS.cpp.o
 
 .PHONY : DirectXTex/DirectXTexDDS.o
@@ -841,12 +787,6 @@ help:
 	@echo "... DirectXTex/DirectXTexConvert.o"
 	@echo "... DirectXTex/DirectXTexConvert.i"
 	@echo "... DirectXTex/DirectXTexConvert.s"
-	@echo "... DirectXTex/DirectXTexD3D11.o"
-	@echo "... DirectXTex/DirectXTexD3D11.i"
-	@echo "... DirectXTex/DirectXTexD3D11.s"
-	@echo "... DirectXTex/DirectXTexD3D12.o"
-	@echo "... DirectXTex/DirectXTexD3D12.i"
-	@echo "... DirectXTex/DirectXTexD3D12.s"
 	@echo "... DirectXTex/DirectXTexDDS.o"
 	@echo "... DirectXTex/DirectXTexDDS.i"
 	@echo "... DirectXTex/DirectXTexDDS.s"

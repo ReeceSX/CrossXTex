@@ -80,6 +80,11 @@ public:
         _stream.seekp(offset, std::ios_base::beg);
     }
 
+    size_t GetOffset()
+    {
+        return static_cast<size_t>(_stream.tellp());;
+    }
+
     size_t GetLength()
     {
         if (!_stream.is_open())
@@ -88,7 +93,7 @@ public:
         }
         auto old = _stream.tellp();
         _stream.seekp(0, std::ios_base::end);
-        auto ret = static_cast<size_t>(_stream.tellp());
+        auto ret = GetOffset();
         _stream.seekp(old, std::ios_base::beg);
         return ret;
     }
@@ -137,6 +142,12 @@ public:
         _stream.seekg(offset, std::ios_base::end);
     }
 
+
+    size_t GetOffset()
+    {
+        return static_cast<size_t>(_stream.tellg());;
+    }
+
     size_t GetLength()
     {
         if (!_stream.is_open())
@@ -145,7 +156,7 @@ public:
         }
         auto old = _stream.tellg();
         _stream.seekg(0, std::ios_base::end);
-        auto ret = static_cast<size_t>(_stream.tellg());
+        auto ret = GetOffset();
         _stream.seekg(old, std::ios_base::beg);
         return ret;
     }
