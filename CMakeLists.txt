@@ -75,6 +75,9 @@ if (WIN32)
     if(BUILD_DX12)
     set(LIBRARY_SOURCES ${LIBRARY_SOURCES} DirectXTex/DirectXTexD3D12.cpp)
     endif()
+
+else()
+   set(LIBRARY_SOURCES ${LIBRARY_SOURCES} DirectXTex/DirectXTexCompress.cpp)
 endif()
 
 
@@ -123,22 +126,22 @@ if(MSVC)
     string(REPLACE "/GR " "/GR- " CMAKE_CXX_FLAGS_RELEASE ${CMAKE_CXX_FLAGS_RELEASE})
 endif()
 
-add_executable(texassemble
-    Texassemble/texassemble.cpp
-    Texassemble/AnimatedGif.cpp)
-target_link_libraries(texassemble ${PROJECT_NAME} version.lib)
-source_group(texassemble REGULAR_EXPRESSION Texassemble/*.*)
+#add_executable(texassemble
+#    Texassemble/texassemble.cpp
+#    Texassemble/AnimatedGif.cpp)
+#target_link_libraries(texassemble ${PROJECT_NAME} version.lib)
+#source_group(texassemble REGULAR_EXPRESSION Texassemble/*.*)
 
-add_executable(texconv
-    Texconv/texconv.cpp
-    Texconv/ExtendedBMP.cpp
-    Texconv/PortablePixMap.cpp)
-target_link_libraries(texconv ${PROJECT_NAME} version.lib)
-source_group(texconv REGULAR_EXPRESSION Texconv/*.*)
+#add_executable(texconv
+#    Texconv/texconv.cpp
+#    Texconv/ExtendedBMP.cpp
+#    Texconv/PortablePixMap.cpp)
+#target_link_libraries(texconv ${PROJECT_NAME} version.lib)
+#source_group(texconv REGULAR_EXPRESSION Texconv/*.*)
 
-add_executable(texdiag Texdiag/texdiag.cpp)
-target_link_libraries(texdiag ${PROJECT_NAME} version.lib)
-source_group(texdiag REGULAR_EXPRESSION Texdiag/*.*)
+# add_executable(texdiag Texdiag/texdiag.cpp)
+# target_link_libraries(texdiag ${PROJECT_NAME} version.lib)
+# source_group(texdiag REGULAR_EXPRESSION Texdiag/*.*)
 
 if(MSVC)
     target_compile_options(${PROJECT_NAME} PRIVATE /fp:fast)
@@ -163,9 +166,9 @@ if ( CMAKE_CXX_COMPILER_ID MATCHES "Clang" )
     # OpenMP is not supported for clang for Windows by default
 
     set(WarningsEXE ${WarningsLib} "-Wno-c++98-compat" "-Wno-c++98-compat-pedantic" "-Wno-switch" "-Wno-switch-enum" "-Wno-language-extension-token" "-Wno-missing-prototypes")
-    target_compile_options(texassemble PRIVATE ${WarningsEXE})
-    target_compile_options(texconv PRIVATE ${WarningsEXE})
-    target_compile_options(texdiag PRIVATE ${WarningsEXE} "-Wno-double-promotion" )
+    #target_compile_options(texassemble PRIVATE ${WarningsEXE})
+    #target_compile_options(texconv PRIVATE ${WarningsEXE})
+    #target_compile_options(texdiag PRIVATE ${WarningsEXE} "-Wno-double-promotion" )
 endif()
 if ( CMAKE_CXX_COMPILER_ID MATCHES "MSVC" )
     target_compile_options(${PROJECT_NAME} PRIVATE /permissive- /JMC- /Zc:__cplusplus)
@@ -200,6 +203,7 @@ if ( CMAKE_CXX_COMPILER_ID MATCHES "MSVC" )
 endif()
 
 target_compile_definitions(${PROJECT_NAME} PRIVATE ${PLATFORM_FLAGS})
+# target_compile_definitions(texdiag PRIVATE ${PLATFORM_FLAGS})
 if(WIN32)
     target_compile_definitions(${PROJECT_NAME} PRIVATE _UNICODE UNICODE)
     target_compile_definitions(texassemble PRIVATE _UNICODE UNICODE _WIN32_WINNT=0x0601)

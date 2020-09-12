@@ -75,17 +75,6 @@ CMAKE_BINARY_DIR = /run/media/reece/Misc/GameEngine/Master/Public/DirectXTex
 #=============================================================================
 # Targets provided globally by CMake.
 
-# Special rule for the target edit_cache
-edit_cache:
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running CMake cache editor..."
-	/usr/bin/ccmake -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
-.PHONY : edit_cache
-
-# Special rule for the target edit_cache
-edit_cache/fast: edit_cache
-
-.PHONY : edit_cache/fast
-
 # Special rule for the target rebuild_cache
 rebuild_cache:
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running CMake to regenerate build system..."
@@ -96,6 +85,17 @@ rebuild_cache:
 rebuild_cache/fast: rebuild_cache
 
 .PHONY : rebuild_cache/fast
+
+# Special rule for the target edit_cache
+edit_cache:
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running CMake cache editor..."
+	/usr/bin/ccmake -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
+.PHONY : edit_cache
+
+# Special rule for the target edit_cache
+edit_cache/fast: edit_cache
+
+.PHONY : edit_cache/fast
 
 # The main all target
 all: cmake_check_build_system
@@ -128,45 +128,6 @@ preinstall/fast:
 depend:
 	$(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
 .PHONY : depend
-
-#=============================================================================
-# Target rules for targets named texdiag
-
-# Build rule for target.
-texdiag: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 texdiag
-.PHONY : texdiag
-
-# fast build rule for target.
-texdiag/fast:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/texdiag.dir/build.make CMakeFiles/texdiag.dir/build
-.PHONY : texdiag/fast
-
-#=============================================================================
-# Target rules for targets named texconv
-
-# Build rule for target.
-texconv: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 texconv
-.PHONY : texconv
-
-# fast build rule for target.
-texconv/fast:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/texconv.dir/build.make CMakeFiles/texconv.dir/build
-.PHONY : texconv/fast
-
-#=============================================================================
-# Target rules for targets named texassemble
-
-# Build rule for target.
-texassemble: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 texassemble
-.PHONY : texassemble
-
-# fast build rule for target.
-texassemble/fast:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/texassemble.dir/build.make CMakeFiles/texassemble.dir/build
-.PHONY : texassemble/fast
 
 #=============================================================================
 # Target rules for targets named DirectXTex
@@ -261,6 +222,33 @@ DirectXTex/BC6HBC7.s: DirectXTex/BC6HBC7.cpp.s
 DirectXTex/BC6HBC7.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/DirectXTex.dir/build.make CMakeFiles/DirectXTex.dir/DirectXTex/BC6HBC7.cpp.s
 .PHONY : DirectXTex/BC6HBC7.cpp.s
+
+DirectXTex/DirectXTexCompress.o: DirectXTex/DirectXTexCompress.cpp.o
+
+.PHONY : DirectXTex/DirectXTexCompress.o
+
+# target to build an object file
+DirectXTex/DirectXTexCompress.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/DirectXTex.dir/build.make CMakeFiles/DirectXTex.dir/DirectXTex/DirectXTexCompress.cpp.o
+.PHONY : DirectXTex/DirectXTexCompress.cpp.o
+
+DirectXTex/DirectXTexCompress.i: DirectXTex/DirectXTexCompress.cpp.i
+
+.PHONY : DirectXTex/DirectXTexCompress.i
+
+# target to preprocess a source file
+DirectXTex/DirectXTexCompress.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/DirectXTex.dir/build.make CMakeFiles/DirectXTex.dir/DirectXTex/DirectXTexCompress.cpp.i
+.PHONY : DirectXTex/DirectXTexCompress.cpp.i
+
+DirectXTex/DirectXTexCompress.s: DirectXTex/DirectXTexCompress.cpp.s
+
+.PHONY : DirectXTex/DirectXTexCompress.s
+
+# target to generate assembly for a file
+DirectXTex/DirectXTexCompress.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/DirectXTex.dir/build.make CMakeFiles/DirectXTex.dir/DirectXTex/DirectXTexCompress.cpp.s
+.PHONY : DirectXTex/DirectXTexCompress.cpp.s
 
 DirectXTex/DirectXTexConvert.o: DirectXTex/DirectXTexConvert.cpp.o
 
@@ -586,168 +574,6 @@ DirectXTex/DirectXTexUtil.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/DirectXTex.dir/build.make CMakeFiles/DirectXTex.dir/DirectXTex/DirectXTexUtil.cpp.s
 .PHONY : DirectXTex/DirectXTexUtil.cpp.s
 
-Texassemble/AnimatedGif.o: Texassemble/AnimatedGif.cpp.o
-
-.PHONY : Texassemble/AnimatedGif.o
-
-# target to build an object file
-Texassemble/AnimatedGif.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/texassemble.dir/build.make CMakeFiles/texassemble.dir/Texassemble/AnimatedGif.cpp.o
-.PHONY : Texassemble/AnimatedGif.cpp.o
-
-Texassemble/AnimatedGif.i: Texassemble/AnimatedGif.cpp.i
-
-.PHONY : Texassemble/AnimatedGif.i
-
-# target to preprocess a source file
-Texassemble/AnimatedGif.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/texassemble.dir/build.make CMakeFiles/texassemble.dir/Texassemble/AnimatedGif.cpp.i
-.PHONY : Texassemble/AnimatedGif.cpp.i
-
-Texassemble/AnimatedGif.s: Texassemble/AnimatedGif.cpp.s
-
-.PHONY : Texassemble/AnimatedGif.s
-
-# target to generate assembly for a file
-Texassemble/AnimatedGif.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/texassemble.dir/build.make CMakeFiles/texassemble.dir/Texassemble/AnimatedGif.cpp.s
-.PHONY : Texassemble/AnimatedGif.cpp.s
-
-Texassemble/texassemble.o: Texassemble/texassemble.cpp.o
-
-.PHONY : Texassemble/texassemble.o
-
-# target to build an object file
-Texassemble/texassemble.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/texassemble.dir/build.make CMakeFiles/texassemble.dir/Texassemble/texassemble.cpp.o
-.PHONY : Texassemble/texassemble.cpp.o
-
-Texassemble/texassemble.i: Texassemble/texassemble.cpp.i
-
-.PHONY : Texassemble/texassemble.i
-
-# target to preprocess a source file
-Texassemble/texassemble.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/texassemble.dir/build.make CMakeFiles/texassemble.dir/Texassemble/texassemble.cpp.i
-.PHONY : Texassemble/texassemble.cpp.i
-
-Texassemble/texassemble.s: Texassemble/texassemble.cpp.s
-
-.PHONY : Texassemble/texassemble.s
-
-# target to generate assembly for a file
-Texassemble/texassemble.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/texassemble.dir/build.make CMakeFiles/texassemble.dir/Texassemble/texassemble.cpp.s
-.PHONY : Texassemble/texassemble.cpp.s
-
-Texconv/ExtendedBMP.o: Texconv/ExtendedBMP.cpp.o
-
-.PHONY : Texconv/ExtendedBMP.o
-
-# target to build an object file
-Texconv/ExtendedBMP.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/texconv.dir/build.make CMakeFiles/texconv.dir/Texconv/ExtendedBMP.cpp.o
-.PHONY : Texconv/ExtendedBMP.cpp.o
-
-Texconv/ExtendedBMP.i: Texconv/ExtendedBMP.cpp.i
-
-.PHONY : Texconv/ExtendedBMP.i
-
-# target to preprocess a source file
-Texconv/ExtendedBMP.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/texconv.dir/build.make CMakeFiles/texconv.dir/Texconv/ExtendedBMP.cpp.i
-.PHONY : Texconv/ExtendedBMP.cpp.i
-
-Texconv/ExtendedBMP.s: Texconv/ExtendedBMP.cpp.s
-
-.PHONY : Texconv/ExtendedBMP.s
-
-# target to generate assembly for a file
-Texconv/ExtendedBMP.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/texconv.dir/build.make CMakeFiles/texconv.dir/Texconv/ExtendedBMP.cpp.s
-.PHONY : Texconv/ExtendedBMP.cpp.s
-
-Texconv/PortablePixMap.o: Texconv/PortablePixMap.cpp.o
-
-.PHONY : Texconv/PortablePixMap.o
-
-# target to build an object file
-Texconv/PortablePixMap.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/texconv.dir/build.make CMakeFiles/texconv.dir/Texconv/PortablePixMap.cpp.o
-.PHONY : Texconv/PortablePixMap.cpp.o
-
-Texconv/PortablePixMap.i: Texconv/PortablePixMap.cpp.i
-
-.PHONY : Texconv/PortablePixMap.i
-
-# target to preprocess a source file
-Texconv/PortablePixMap.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/texconv.dir/build.make CMakeFiles/texconv.dir/Texconv/PortablePixMap.cpp.i
-.PHONY : Texconv/PortablePixMap.cpp.i
-
-Texconv/PortablePixMap.s: Texconv/PortablePixMap.cpp.s
-
-.PHONY : Texconv/PortablePixMap.s
-
-# target to generate assembly for a file
-Texconv/PortablePixMap.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/texconv.dir/build.make CMakeFiles/texconv.dir/Texconv/PortablePixMap.cpp.s
-.PHONY : Texconv/PortablePixMap.cpp.s
-
-Texconv/texconv.o: Texconv/texconv.cpp.o
-
-.PHONY : Texconv/texconv.o
-
-# target to build an object file
-Texconv/texconv.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/texconv.dir/build.make CMakeFiles/texconv.dir/Texconv/texconv.cpp.o
-.PHONY : Texconv/texconv.cpp.o
-
-Texconv/texconv.i: Texconv/texconv.cpp.i
-
-.PHONY : Texconv/texconv.i
-
-# target to preprocess a source file
-Texconv/texconv.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/texconv.dir/build.make CMakeFiles/texconv.dir/Texconv/texconv.cpp.i
-.PHONY : Texconv/texconv.cpp.i
-
-Texconv/texconv.s: Texconv/texconv.cpp.s
-
-.PHONY : Texconv/texconv.s
-
-# target to generate assembly for a file
-Texconv/texconv.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/texconv.dir/build.make CMakeFiles/texconv.dir/Texconv/texconv.cpp.s
-.PHONY : Texconv/texconv.cpp.s
-
-Texdiag/texdiag.o: Texdiag/texdiag.cpp.o
-
-.PHONY : Texdiag/texdiag.o
-
-# target to build an object file
-Texdiag/texdiag.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/texdiag.dir/build.make CMakeFiles/texdiag.dir/Texdiag/texdiag.cpp.o
-.PHONY : Texdiag/texdiag.cpp.o
-
-Texdiag/texdiag.i: Texdiag/texdiag.cpp.i
-
-.PHONY : Texdiag/texdiag.i
-
-# target to preprocess a source file
-Texdiag/texdiag.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/texdiag.dir/build.make CMakeFiles/texdiag.dir/Texdiag/texdiag.cpp.i
-.PHONY : Texdiag/texdiag.cpp.i
-
-Texdiag/texdiag.s: Texdiag/texdiag.cpp.s
-
-.PHONY : Texdiag/texdiag.s
-
-# target to generate assembly for a file
-Texdiag/texdiag.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/texdiag.dir/build.make CMakeFiles/texdiag.dir/Texdiag/texdiag.cpp.s
-.PHONY : Texdiag/texdiag.cpp.s
-
 # target to build an object file
 cmake_pch.hxx.pch:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/DirectXTex.dir/build.make CMakeFiles/DirectXTex.dir/cmake_pch.hxx.pch
@@ -772,9 +598,6 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... DirectXTex"
-	@echo "... texassemble"
-	@echo "... texconv"
-	@echo "... texdiag"
 	@echo "... DirectXTex/BC.o"
 	@echo "... DirectXTex/BC.i"
 	@echo "... DirectXTex/BC.s"
@@ -784,6 +607,9 @@ help:
 	@echo "... DirectXTex/BC6HBC7.o"
 	@echo "... DirectXTex/BC6HBC7.i"
 	@echo "... DirectXTex/BC6HBC7.s"
+	@echo "... DirectXTex/DirectXTexCompress.o"
+	@echo "... DirectXTex/DirectXTexCompress.i"
+	@echo "... DirectXTex/DirectXTexCompress.s"
 	@echo "... DirectXTex/DirectXTexConvert.o"
 	@echo "... DirectXTex/DirectXTexConvert.i"
 	@echo "... DirectXTex/DirectXTexConvert.s"
@@ -820,24 +646,6 @@ help:
 	@echo "... DirectXTex/DirectXTexUtil.o"
 	@echo "... DirectXTex/DirectXTexUtil.i"
 	@echo "... DirectXTex/DirectXTexUtil.s"
-	@echo "... Texassemble/AnimatedGif.o"
-	@echo "... Texassemble/AnimatedGif.i"
-	@echo "... Texassemble/AnimatedGif.s"
-	@echo "... Texassemble/texassemble.o"
-	@echo "... Texassemble/texassemble.i"
-	@echo "... Texassemble/texassemble.s"
-	@echo "... Texconv/ExtendedBMP.o"
-	@echo "... Texconv/ExtendedBMP.i"
-	@echo "... Texconv/ExtendedBMP.s"
-	@echo "... Texconv/PortablePixMap.o"
-	@echo "... Texconv/PortablePixMap.i"
-	@echo "... Texconv/PortablePixMap.s"
-	@echo "... Texconv/texconv.o"
-	@echo "... Texconv/texconv.i"
-	@echo "... Texconv/texconv.s"
-	@echo "... Texdiag/texdiag.o"
-	@echo "... Texdiag/texdiag.i"
-	@echo "... Texdiag/texdiag.s"
 	@echo "... cmake_pch.hxx.pch"
 	@echo "... cmake_pch.hxx.i"
 	@echo "... cmake_pch.hxx.s"

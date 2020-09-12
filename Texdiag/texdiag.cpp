@@ -9,31 +9,10 @@
 // http://go.microsoft.com/fwlink/?LinkId=248926
 //--------------------------------------------------------------------------------------
 
-#pragma warning(push)
-#pragma warning(disable : 4005)
-#define WIN32_LEAN_AND_MEAN
-#define NOMINMAX
-#define NODRAWTEXT
-#define NOGDI
-#define NOMCX
-#define NOSERVICE
-#define NOHELP
-#pragma warning(pop)
-
-#include <stdio.h>
-#include <stdlib.h>
-#include <assert.h>
-
-#include <fstream>
-#include <memory>
-#include <list>
-#include <vector>
-
-#include <dxgiformat.h>
 
 #pragma warning(disable : 4619 4616 26812)
 
-#include "DirectXTex.h"
+#include "DirectXTexP.h"
 
 //Uncomment to add support for OpenEXR (.exr)
 //#define USE_OPENEXR
