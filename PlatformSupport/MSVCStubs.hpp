@@ -1,6 +1,4 @@
-#include <cstdint>
-
-#define __cdecl
+#pragma once
 
 typedef struct _GUID {
   unsigned long  Data1;
@@ -9,9 +7,8 @@ typedef struct _GUID {
   unsigned char  Data4[8];
 } GUID;
 
-typedef size_t HANDLE;
-
 #define UNREFERENCED_PARAMETER
+#include "MSVCSal.h"
 
 #define DEFINE_ENUM_FLAG_OPERATORS(ENUMTYPE) \
 extern "C++" { \
@@ -30,11 +27,6 @@ inline ENUMTYPE &operator ^= (ENUMTYPE &a, ENUMTYPE b) { return (ENUMTYPE &)(((i
 
 #define _countof(array) (sizeof(array) / sizeof(array[0]))
 
-#include "MSVCSal.h"
-
-#include <stdbool.h>
-
 #define BOOL int
 #define TRUE 1
 #define FALSE 0
-
