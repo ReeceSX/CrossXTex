@@ -64,20 +64,20 @@ set(LIBRARY_SOURCES
     DirectXTex/DirectXTexUtil.cpp)
 
 if (WIN32)
-   set(LIBRARY_SOURCES ${LIBRARY_SOURCES} DirectXTex/DirectXTexCompressGPU.cpp)
-   set(LIBRARY_SOURCES ${LIBRARY_SOURCES} DirectXTex/BCDirectCompute.cpp)
-   set(LIBRARY_SOURCES ${LIBRARY_SOURCES} DirectXTex/DirectXTexWIC.cpp)
+    set(LIBRARY_SOURCES ${LIBRARY_SOURCES} DirectXTex/DirectXTexCompressGPU.cpp)
+    set(LIBRARY_SOURCES ${LIBRARY_SOURCES} DirectXTex/BCDirectCompute.cpp)
+    set(LIBRARY_SOURCES ${LIBRARY_SOURCES} DirectXTex/DirectXTexWIC.cpp)
 
 
     if(BUILD_DX11)
-    set(LIBRARY_SOURCES ${LIBRARY_SOURCES} DirectXTex/DirectXTexD3D11.cpp)
+        set(LIBRARY_SOURCES ${LIBRARY_SOURCES} DirectXTex/DirectXTexD3D11.cpp)
     endif()
     if(BUILD_DX12)
-    set(LIBRARY_SOURCES ${LIBRARY_SOURCES} DirectXTex/DirectXTexD3D12.cpp)
+        set(LIBRARY_SOURCES ${LIBRARY_SOURCES} DirectXTex/DirectXTexD3D12.cpp)
     endif()
 
 else()
-   set(LIBRARY_SOURCES ${LIBRARY_SOURCES} DirectXTex/DirectXTexCompress.cpp)
+    set(LIBRARY_SOURCES ${LIBRARY_SOURCES} DirectXTex/DirectXTexCompress.cpp)
 endif()
 
 
@@ -96,13 +96,9 @@ if (WIN32)
         COMMAND "CompileShaders.cmd"
         WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}/DirectXTex/Shaders"
         USES_TERMINAL)
-
 else()
-
     add_library(${PROJECT_NAME} STATIC ${LIBRARY_SOURCES})
-
 endif()
-
 
 source_group(${PROJECT_NAME} REGULAR_EXPRESSION DirectXTex/*.*)
 
@@ -126,89 +122,44 @@ if(MSVC)
     string(REPLACE "/GR " "/GR- " CMAKE_CXX_FLAGS_RELEASE ${CMAKE_CXX_FLAGS_RELEASE})
 endif()
 
-#add_executable(texassemble
-#    Texassemble/texassemble.cpp
-#    Texassemble/AnimatedGif.cpp)
-#target_link_libraries(texassemble ${PROJECT_NAME} version.lib)
-#source_group(texassemble REGULAR_EXPRESSION Texassemble/*.*)
-
-#add_executable(texconv
-#    Texconv/texconv.cpp
-#    Texconv/ExtendedBMP.cpp
-#    Texconv/PortablePixMap.cpp)
-#target_link_libraries(texconv ${PROJECT_NAME} version.lib)
-#source_group(texconv REGULAR_EXPRESSION Texconv/*.*)
-
-# add_executable(texdiag Texdiag/texdiag.cpp)
-# target_link_libraries(texdiag ${PROJECT_NAME} version.lib)
-# source_group(texdiag REGULAR_EXPRESSION Texdiag/*.*)
 
 if(MSVC)
     target_compile_options(${PROJECT_NAME} PRIVATE /fp:fast)
-    target_compile_options(texassemble PRIVATE /fp:fast)
-    target_compile_options(texconv PRIVATE /fp:fast)
-    target_compile_options(texdiag PRIVATE /fp:fast)
 
     if (${CMAKE_SIZEOF_VOID_P} EQUAL "4")
         target_compile_options(${PROJECT_NAME} PRIVATE /arch:SSE2)
-        target_compile_options(texassemble PRIVATE /arch:SSE2)
-        target_compile_options(texconv PRIVATE /arch:SSE2)
-        target_compile_options(texdiag PRIVATE /arch:SSE2)
     endif()
 endif()
 
-# TODO FIX ME 
 if ( CMAKE_CXX_COMPILER_ID MATCHES "Clang" )
     set(WarningsLib "-Wpedantic" "-Wextra")
     target_compile_options(${PROJECT_NAME} PRIVATE ${WarningsLib})
     target_compile_options(${PROJECT_NAME} PRIVATE "-fdeclspec")
 
-    # OpenMP is not supported for clang for Windows by default
-
     set(WarningsEXE ${WarningsLib} "-Wno-c++98-compat" "-Wno-c++98-compat-pedantic" "-Wno-switch" "-Wno-switch-enum" "-Wno-language-extension-token" "-Wno-missing-prototypes")
-    #target_compile_options(texassemble PRIVATE ${WarningsEXE})
-    #target_compile_options(texconv PRIVATE ${WarningsEXE})
-    #target_compile_options(texdiag PRIVATE ${WarningsEXE} "-Wno-double-promotion" )
 endif()
 if ( CMAKE_CXX_COMPILER_ID MATCHES "MSVC" )
     target_compile_options(${PROJECT_NAME} PRIVATE /permissive- /JMC- /Zc:__cplusplus)
-    target_compile_options(texassemble PRIVATE /permissive- /Zc:__cplusplus)
-    target_compile_options(texconv PRIVATE /permissive- /Zc:__cplusplus)
-    target_compile_options(texdiag PRIVATE /permissive- /Zc:__cplusplus)
 
     if(ENABLE_CODE_ANALYSIS)
       target_compile_options(${PROJECT_NAME} PRIVATE /analyze)
-      target_compile_options(texassemble PRIVATE /analyze)
-      target_compile_options(texconv PRIVATE /analyze)
-      target_compile_options(texdiag PRIVATE /analyze)
    endif()
 
 
     if (CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 19.26)
         target_compile_options(${PROJECT_NAME} PRIVATE /Zc:preprocessor /wd5105)
-        target_compile_options(texassemble PRIVATE /Zc:preprocessor /wd5105)
-        target_compile_options(texconv PRIVATE /Zc:preprocessor /wd5105)
-        target_compile_options(texdiag PRIVATE /Zc:preprocessor /wd5105)
     endif()
 
     if(BC_USE_OPENMP)
         target_compile_options(${PROJECT_NAME} PRIVATE /openmp /Zc:twoPhase-)
-        target_compile_options(texconv PRIVATE /openmp /Zc:twoPhase-)
     endif()
 
     set(WarningsEXE "/wd4061" "/wd4062" "/wd4365" "/wd4668" "/wd4710" "/wd4820" "/wd5039" "/wd5045" "/wd5219")
-    target_compile_options(texassemble PRIVATE ${WarningsEXE})
-    target_compile_options(texconv PRIVATE ${WarningsEXE})
-    target_compile_options(texdiag PRIVATE ${WarningsEXE})
 endif()
 
 target_compile_definitions(${PROJECT_NAME} PRIVATE ${PLATFORM_FLAGS})
-# target_compile_definitions(texdiag PRIVATE ${PLATFORM_FLAGS})
 if(WIN32)
     target_compile_definitions(${PROJECT_NAME} PRIVATE _UNICODE UNICODE)
-    target_compile_definitions(texassemble PRIVATE _UNICODE UNICODE _WIN32_WINNT=0x0601)
-    target_compile_definitions(texconv PRIVATE _UNICODE UNICODE _WIN32_WINNT=0x0601)
-    target_compile_definitions(texdiag PRIVATE _UNICODE UNICODE _WIN32_WINNT=0x0601)
 
     if(BUILD_DX12)
         target_compile_definitions(${PROJECT_NAME} PRIVATE _WIN32_WINNT=0x0A00)
