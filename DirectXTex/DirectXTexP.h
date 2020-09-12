@@ -70,13 +70,17 @@
 #pragma clang diagnostic ignored "-Wunknown-pragmas"
 #endif
 
+
+#define _CRT_SECURE_NO_WARNINGS 
+#define _SILENCE_ALL_CXX17_DEPRECATION_WARNINGS // We love the MSVC team `this library component should be retired to Annex D, along side , until a suitable replacement is standardized.`
+
 #ifndef WIN32_LEAN_AND_MEAN
 #define WIN32_LEAN_AND_MEAN
 #endif
 
 
+#include  <codecvt>
 #include <malloc.h>
-#include <memory>
 #include <vector>
 #include <time.h>
 #include <stdlib.h>
@@ -91,7 +95,7 @@
 #include <filesystem>
 #include <ios>
 #include <fstream>
-	
+#include <locale>
 #include <assert.h>
 
 #if !defined(_DXTX_NOWIN)
@@ -144,7 +148,8 @@
 
 #endif
 
-#include "StdFS.hpp"
+#include <DXMemory.hpp>
+#include <StdFS.hpp>
 
 #define _DXTEX_PRIVATE
 #include "DirectXTex.h"

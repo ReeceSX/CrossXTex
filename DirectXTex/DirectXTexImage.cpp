@@ -690,7 +690,7 @@ void ScratchImage::Release() noexcept
 
     if (m_memory)
     {
-        std::free(m_memory);
+        FreeVectorAligned(m_memory);
         m_memory = nullptr;
     }
 

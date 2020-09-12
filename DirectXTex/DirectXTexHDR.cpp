@@ -1027,7 +1027,6 @@ HRESULT DirectX::SaveToHDRFile(const Image& image, const wchar_t* szFile) noexce
 
         // Write blob
         auto bytesToWrite = static_cast<const DWORD>(blob.GetBufferSize());
-        DWORD bytesWritten;
         if (!hFile.Write(blob.GetBufferPointer(), bytesToWrite))
         {
             return E_FAIL;
@@ -1048,7 +1047,6 @@ HRESULT DirectX::SaveToHDRFile(const Image& image, const wchar_t* szFile) noexce
 
         auto headerLen = static_cast<DWORD>(strlen(header));
 
-        DWORD bytesWritten;
         if (!hFile.Write(header, headerLen))
         {
             return E_FAIL;

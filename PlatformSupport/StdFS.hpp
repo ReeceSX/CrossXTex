@@ -1,20 +1,20 @@
 #pragma once
 
+
 template<typename T>
 class ScopedFile
 {
 public:
 
-
     ScopedFile(const std::string & path, bool reset = false)
     {
-        init(path, reset);
+        Init(path, reset);
     }
 
     ScopedFile(const std::wstring & path, bool reset = false)
     {
         std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t> converter;
-        init(converter.to_bytes(path), reset);
+        Init(converter.to_bytes(path), reset);
     }
 
     ~ScopedFile()
@@ -23,13 +23,10 @@ public:
 
         if (this->_temp)
         {
-            DeleteFile();
+            std::filesystem::remove(_path);
         }
     }
-
-    virtual size_t GetLength();
-    virtual void SeekBegin(size_t offset);
-    virtual void DeleteFile();
+    
 
     void MakeTemp()
     {
@@ -43,7 +40,7 @@ protected:
 private:
 
 
-    void init(const std::string & path, bool reset)
+    void Init(const std::string & path, bool reset)
     {
         this->_path = path;
         this->_temp = false;
@@ -75,12 +72,12 @@ public:
         // -
     }
 
-    void SeekBegin(size_t offset)
+    void SeekBegin(size_t offset) 
     {
         _stream.seekp(offset, std::ios_base::beg);
     }
 
-    size_t GetOffset()
+    size_t GetOffset() 
     {
         return static_cast<size_t>(_stream.tellp());;
     }
@@ -109,11 +106,6 @@ public:
             return false;
         }
         return true;
-    }
-
-    void DeleteFile()
-    {
-        std::filesystem::remove(_path);
     }
 };
 
@@ -175,10 +167,5 @@ public:
         std::vector<uint8_t> in;
         in.resize(length);
         return Read(in.data(), length);
-    }
-
-    void DeleteFile()
-    {
-        std::filesystem::remove(_path);
     }
 };
