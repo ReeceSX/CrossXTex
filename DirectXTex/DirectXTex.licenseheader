@@ -1,0 +1,12 @@
+﻿extensions: designer.cs generated.cs
+extensions: .cs .cpp .h .hpp .c .java
+/***
+    Copyright (©) %CurrentYear% Reece Wilson (a/k/a "%UserDisplayName%"). All rights reserved.
+    Do not use, copy, distribute, publish, disseminate, modify, or sublicense without express permission from the rights holder[s]. 
+    Please do no evil.
+ 
+    File: %FileName%
+    Date: %CreationYear%-%CreationMonth%-%CreationDay%
+    Author: %UserDisplayName%
+    Purpose: TBD
+***/

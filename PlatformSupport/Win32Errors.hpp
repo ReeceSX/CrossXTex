@@ -1,7 +1,5 @@
 #pragma once
 
-#include <cinttypes>
-
 using HRESULT = LONG;
 using WORD = int16_t;
 using DWORD = uint32_t;
