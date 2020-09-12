@@ -12,10 +12,13 @@
 #include "DirectXTexP.h"
 
 using namespace DirectX;
+#if !defined(_DXTX_NOWIN)
 using Microsoft::WRL::ComPtr;
+#endif
 
 namespace
 {
+#if !defined(_DXTX_NOWIN)
     //-------------------------------------------------------------------------------------
     // Do flip/rotate operation using WIC
     //-------------------------------------------------------------------------------------
@@ -80,7 +83,6 @@ namespace
 
         return S_OK;
     }
-
 
     //-------------------------------------------------------------------------------------
     // Do conversion, flip/rotate using WIC, conversion cycle
@@ -171,6 +173,19 @@ namespace
 
         return S_OK;
     }
+
+    #else
+    HRESULT PerformFlipRotateViaSIMD(
+        const Image& srcImage,
+        TEX_FR_FLAGS flags,
+        const Image& destImage) noexcept
+    {
+        // TODO: error on rotate, flip - 
+        // TODO: simd library support
+        return E_FAIL;
+    }
+
+    #endif
 }
 
 
@@ -214,11 +229,13 @@ HRESULT DirectX::FlipRotate(
 
     switch (rotateMode)
     {
+#if !defined(_DXTX_NOWIN)
     case 0:
     case TEX_FR_ROTATE90:
     case TEX_FR_ROTATE180:
     case TEX_FR_ROTATE270:
         break;
+#endif
 
     default:
         return E_INVALIDARG;
@@ -244,6 +261,8 @@ HRESULT DirectX::FlipRotate(
         return E_POINTER;
     }
 
+
+#if !defined(_DXTX_NOWIN)
     WICPixelFormatGUID pfGUID;
     if (_DXGIToWIC(srcImage.format, pfGUID))
     {
@@ -265,6 +284,9 @@ HRESULT DirectX::FlipRotate(
         }
     }
 
+#else
+    PerformFlipRotateViaSIMD(srcImage, flags, *rimage);
+#endif
     if (FAILED(hr))
     {
         image.Release();
@@ -307,11 +329,14 @@ HRESULT DirectX::FlipRotate(
 
     switch (rotateMode)
     {
+
+#if !defined(_DXTX_NOWIN)
     case 0:
     case TEX_FR_ROTATE90:
     case TEX_FR_ROTATE180:
     case TEX_FR_ROTATE270:
         break;
+#endif
 
     default:
         return E_INVALIDARG;
@@ -344,9 +369,11 @@ HRESULT DirectX::FlipRotate(
         return E_POINTER;
     }
 
+
+#if !defined(_DXTX_NOWIN)
     WICPixelFormatGUID pfGUID;
     bool wicpf = _DXGIToWIC(metadata.format, pfGUID);
-
+#endif 
     for (size_t index = 0; index < nimages; ++index)
     {
         const Image& src = srcImages[index];
@@ -379,6 +406,7 @@ HRESULT DirectX::FlipRotate(
             }
         }
 
+#if !defined(_DXTX_NOWIN)
         if (wicpf)
         {
             // Case 1: Source format is supported by Windows Imaging Component
@@ -399,6 +427,9 @@ HRESULT DirectX::FlipRotate(
             }
         }
 
+#else
+        PerformFlipRotateViaSIMD(src, flags, dst);
+#endif
         if (FAILED(hr))
         {
             result.Release();

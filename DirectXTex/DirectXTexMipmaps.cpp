@@ -14,7 +14,10 @@
 #include "filters.h"
 
 using namespace DirectX;
+
+#if !defined(_DXTX_NOWIN)
 using Microsoft::WRL::ComPtr;
+#endif
 
 namespace
 {
@@ -64,7 +67,7 @@ namespace
         return mipLevels;
     }
 
-
+#if !defined(_DXTX_NOWIN)
     HRESULT EnsureWicBitmapPixelFormat(
         _In_ IWICImagingFactory* pWIC,
         _In_ IWICBitmap* src,
@@ -116,6 +119,7 @@ namespace
 
         return hr;
     }
+#endif
 
 
 #if DIRECTX_MATH_VERSION >= 310
@@ -142,7 +146,7 @@ namespace
         assert(srcImage.width == destImage.width);
         assert(srcImage.height == destImage.height);
 
-        ScopedAlignedArrayXMVECTOR scanline(reinterpret_cast<XMVECTOR*>(_aligned_malloc((sizeof(XMVECTOR)*srcImage.width), 16)));
+        ScopedAlignedArrayXMVECTOR scanline(reinterpret_cast<XMVECTOR*>(AllocateVectorAligned((sizeof(XMVECTOR)*srcImage.width))));
         if (!scanline)
         {
             return E_OUTOFMEMORY;
@@ -214,13 +218,13 @@ namespace
     {
         coverage = 0.0f;
 
-        ScopedAlignedArrayXMVECTOR row0(reinterpret_cast<XMVECTOR*>(_aligned_malloc((sizeof(XMVECTOR)*srcImage.width), 16)));
+        ScopedAlignedArrayXMVECTOR row0(reinterpret_cast<XMVECTOR*>(AllocateVectorAligned((sizeof(XMVECTOR)*srcImage.width))));
         if (!row0)
         {
             return E_OUTOFMEMORY;
         }
 
-        ScopedAlignedArrayXMVECTOR row1(reinterpret_cast<XMVECTOR*>(_aligned_malloc((sizeof(XMVECTOR)*srcImage.width), 16)));
+        ScopedAlignedArrayXMVECTOR row1(reinterpret_cast<XMVECTOR*>(AllocateVectorAligned((sizeof(XMVECTOR)*srcImage.width))));
         if (!row1)
         {
             return E_OUTOFMEMORY;
@@ -349,9 +353,11 @@ namespace DirectX
     bool _CalculateMipLevels3D(_In_ size_t width, _In_ size_t height, _In_ size_t depth, _Inout_ size_t& mipLevels) noexcept;
         // Also used by Compress
 
+#if !defined(_DXTX_NOWIN)
     HRESULT _ResizeSeparateColorAndAlpha(_In_ IWICImagingFactory* pWIC, _In_ bool iswic2, _In_ IWICBitmap* original,
         _In_ size_t newWidth, _In_ size_t newHeight, _In_ TEX_FILTER_FLAGS filter, _Inout_ const Image* img) noexcept;
         // Also used by Resize
+#endif
 
     bool _CalculateMipLevels(_In_ size_t width, _In_ size_t height, _Inout_ size_t& mipLevels) noexcept
     {
@@ -391,6 +397,7 @@ namespace DirectX
         return true;
     }
 
+#if !defined(_DXTX_NOWIN)
     //--- Resizing color and alpha channels separately using WIC ---
     _Use_decl_annotations_
     HRESULT _ResizeSeparateColorAndAlpha(
@@ -607,6 +614,7 @@ namespace DirectX
 
         return hr;
     }
+    #endif
 }
 
 namespace
@@ -614,6 +622,9 @@ namespace
     //--- determine when to use WIC vs. non-WIC paths ---
     bool UseWICFiltering(_In_ DXGI_FORMAT format, _In_ TEX_FILTER_FLAGS filter) noexcept
     {
+#if defined(_DXTX_NOWIN)
+        return false;
+#endif
         if (filter & TEX_FILTER_FORCE_NON_WIC)
         {
             // Explicit flag indicates use of non-WIC code paths
@@ -682,6 +693,7 @@ namespace
     }
 
 
+#if !defined(_DXTX_NOWIN)
     //--- mipmap (1D/2D) generation using WIC image scalar ---
     HRESULT GenerateMipMapsUsingWIC(
         _In_ const Image& baseImage,
@@ -822,6 +834,7 @@ namespace
 
         return S_OK;
     }
+    #endif
 
 
     //-------------------------------------------------------------------------------------
@@ -896,7 +909,7 @@ namespace
         size_t height = mipChain.GetMetadata().height;
 
         // Allocate temporary space (2 scanlines)
-        ScopedAlignedArrayXMVECTOR scanline(static_cast<XMVECTOR*>(_aligned_malloc((sizeof(XMVECTOR)*width * 2), 16)));
+        ScopedAlignedArrayXMVECTOR scanline(static_cast<XMVECTOR*>(AllocateVectorAligned((sizeof(XMVECTOR)*width * 2))));
         if (!scanline)
             return E_OUTOFMEMORY;
 
@@ -983,7 +996,7 @@ namespace
             return E_FAIL;
 
         // Allocate temporary space (3 scanlines)
-        ScopedAlignedArrayXMVECTOR scanline(static_cast<XMVECTOR*>(_aligned_malloc((sizeof(XMVECTOR)*width * 3), 16)));
+        ScopedAlignedArrayXMVECTOR scanline(static_cast<XMVECTOR*>(AllocateVectorAligned((sizeof(XMVECTOR)*width * 3))));
         if (!scanline)
             return E_OUTOFMEMORY;
 
@@ -1074,7 +1087,7 @@ namespace
         size_t height = mipChain.GetMetadata().height;
 
         // Allocate temporary space (3 scanlines, plus X and Y filters)
-        ScopedAlignedArrayXMVECTOR scanline(static_cast<XMVECTOR*>(_aligned_malloc((sizeof(XMVECTOR)*width * 3), 16)));
+        ScopedAlignedArrayXMVECTOR scanline(static_cast<XMVECTOR*>(AllocateVectorAligned((sizeof(XMVECTOR)*width * 3))));
         if (!scanline)
             return E_OUTOFMEMORY;
 
@@ -1185,7 +1198,7 @@ namespace
         size_t height = mipChain.GetMetadata().height;
 
         // Allocate temporary space (5 scanlines, plus X and Y filters)
-        ScopedAlignedArrayXMVECTOR scanline(static_cast<XMVECTOR*>(_aligned_malloc((sizeof(XMVECTOR)*width * 5), 16)));
+        ScopedAlignedArrayXMVECTOR scanline(static_cast<XMVECTOR*>(AllocateVectorAligned((sizeof(XMVECTOR)*width * 5))));
         if (!scanline)
             return E_OUTOFMEMORY;
 
@@ -1373,7 +1386,7 @@ namespace
         size_t height = mipChain.GetMetadata().height;
 
         // Allocate initial temporary space (1 scanline, accumulation rows, plus X and Y filters)
-        ScopedAlignedArrayXMVECTOR scanline(static_cast<XMVECTOR*>(_aligned_malloc(sizeof(XMVECTOR) * width, 16)));
+        ScopedAlignedArrayXMVECTOR scanline(static_cast<XMVECTOR*>(AllocateVectorAligned(sizeof(XMVECTOR) * width)));
         if (!scanline)
             return E_OUTOFMEMORY;
 
@@ -1462,7 +1475,7 @@ namespace
                         }
                         else
                         {
-                            rowAcc->scanline.reset(static_cast<XMVECTOR*>(_aligned_malloc(sizeof(XMVECTOR) * nwidth, 16)));
+                            rowAcc->scanline.reset(static_cast<XMVECTOR*>(AllocateVectorAligned(sizeof(XMVECTOR) * nwidth)));
                             if (!rowAcc->scanline)
                                 return E_OUTOFMEMORY;
                         }
@@ -1641,7 +1654,7 @@ namespace
         size_t height = mipChain.GetMetadata().height;
 
         // Allocate temporary space (2 scanlines)
-        ScopedAlignedArrayXMVECTOR scanline(static_cast<XMVECTOR*>(_aligned_malloc((sizeof(XMVECTOR)*width * 2), 16)));
+        ScopedAlignedArrayXMVECTOR scanline(static_cast<XMVECTOR*>(AllocateVectorAligned((sizeof(XMVECTOR)*width * 2))));
         if (!scanline)
             return E_OUTOFMEMORY;
 
@@ -1790,7 +1803,7 @@ namespace
             return E_FAIL;
 
         // Allocate temporary space (5 scanlines)
-        ScopedAlignedArrayXMVECTOR scanline(static_cast<XMVECTOR*>(_aligned_malloc((sizeof(XMVECTOR)*width * 5), 16)));
+        ScopedAlignedArrayXMVECTOR scanline(static_cast<XMVECTOR*>(AllocateVectorAligned((sizeof(XMVECTOR)*width * 5))));
         if (!scanline)
             return E_OUTOFMEMORY;
 
@@ -1959,7 +1972,7 @@ namespace
         size_t height = mipChain.GetMetadata().height;
 
         // Allocate temporary space (5 scanlines, plus X/Y/Z filters)
-        ScopedAlignedArrayXMVECTOR scanline(static_cast<XMVECTOR*>(_aligned_malloc((sizeof(XMVECTOR)*width * 5), 16)));
+        ScopedAlignedArrayXMVECTOR scanline(static_cast<XMVECTOR*>(AllocateVectorAligned((sizeof(XMVECTOR)*width * 5))));
         if (!scanline)
             return E_OUTOFMEMORY;
 
@@ -2152,7 +2165,7 @@ namespace
         size_t height = mipChain.GetMetadata().height;
 
         // Allocate temporary space (17 scanlines, plus X/Y/Z filters)
-        ScopedAlignedArrayXMVECTOR scanline(static_cast<XMVECTOR*>(_aligned_malloc((sizeof(XMVECTOR)*width * 17), 16)));
+        ScopedAlignedArrayXMVECTOR scanline(static_cast<XMVECTOR*>(AllocateVectorAligned((sizeof(XMVECTOR)*width * 17))));
         if (!scanline)
             return E_OUTOFMEMORY;
 
@@ -2533,7 +2546,7 @@ namespace
         size_t height = mipChain.GetMetadata().height;
 
         // Allocate initial temporary space (1 scanline, accumulation rows, plus X/Y/Z filters)
-        ScopedAlignedArrayXMVECTOR scanline(static_cast<XMVECTOR*>(_aligned_malloc(sizeof(XMVECTOR) * width, 16)));
+        ScopedAlignedArrayXMVECTOR scanline(static_cast<XMVECTOR*>(AllocateVectorAligned(sizeof(XMVECTOR) * width)));
         if (!scanline)
             return E_OUTOFMEMORY;
 
@@ -2617,7 +2630,7 @@ namespace
                         else
                         {
                             size_t bytes = sizeof(XMVECTOR) * nwidth * nheight;
-                            sliceAcc->scanline.reset(static_cast<XMVECTOR*>(_aligned_malloc(bytes, 16)));
+                            sliceAcc->scanline.reset(static_cast<XMVECTOR*>(AllocateVectorAligned(bytes)));
                             if (!sliceAcc->scanline)
                                 return E_OUTOFMEMORY;
                         }
@@ -2797,8 +2810,10 @@ HRESULT DirectX::GenerateMipMaps(
 
     static_assert(TEX_FILTER_POINT == 0x100000, "TEX_FILTER_ flag values don't match TEX_FILTER_MODE_MASK");
 
-    bool usewic = UseWICFiltering(baseImage.format, filter);
 
+#if !defined(_DXTX_NOWIN)
+    bool usewic = UseWICFiltering(baseImage.format, filter);
+    
     WICPixelFormatGUID pfGUID = {};
     bool wicpf = (usewic) ? _DXGIToWIC(baseImage.format, pfGUID, true) : false;
 
@@ -2875,6 +2890,7 @@ HRESULT DirectX::GenerateMipMaps(
         }
     }
     else
+#endif 
     {
         //--- Use custom filters to generate mipmaps ----------------------------------
         TexMetadata mdata = {};
@@ -3010,6 +3026,7 @@ HRESULT DirectX::GenerateMipMaps(
 
     static_assert(TEX_FILTER_POINT == 0x100000, "TEX_FILTER_ flag values don't match TEX_FILTER_MODE_MASK");
 
+#if !defined(_DXTX_NOWIN)
     bool usewic = !metadata.IsPMAlpha() && UseWICFiltering(metadata.format, filter);
 
     WICPixelFormatGUID pfGUID = {};
@@ -3101,6 +3118,7 @@ HRESULT DirectX::GenerateMipMaps(
         }
     }
     else
+#endif
     {
         //--- Use custom filters to generate mipmaps ----------------------------------
         TexMetadata mdata2 = metadata;

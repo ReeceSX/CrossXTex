@@ -351,7 +351,7 @@ HRESULT ScratchImage::Initialize(const TexMetadata& mdata, CP_FLAGS flags) noexc
     m_nimages = nimages;
     memset(m_image, 0, sizeof(Image) * nimages);
 
-    m_memory = static_cast<uint8_t*>(_aligned_malloc(pixelSize, 16));
+    m_memory = static_cast<uint8_t*>(AllocateVectorAligned(pixelSize));
     if (!m_memory)
     {
         Release();
@@ -418,7 +418,7 @@ HRESULT ScratchImage::Initialize2D(DXGI_FORMAT fmt, size_t width, size_t height,
     m_nimages = nimages;
     memset(m_image, 0, sizeof(Image) * nimages);
 
-    m_memory = static_cast<uint8_t*>(_aligned_malloc(pixelSize, 16));
+    m_memory = static_cast<uint8_t*>(AllocateVectorAligned(pixelSize));
     if (!m_memory)
     {
         Release();
@@ -471,7 +471,7 @@ HRESULT ScratchImage::Initialize3D(DXGI_FORMAT fmt, size_t width, size_t height,
     m_nimages = nimages;
     memset(m_image, 0, sizeof(Image) * nimages);
 
-    m_memory = static_cast<uint8_t*>(_aligned_malloc(pixelSize, 16));
+    m_memory = static_cast<uint8_t*>(AllocateVectorAligned(pixelSize));
     if (!m_memory)
     {
         Release();
@@ -690,7 +690,7 @@ void ScratchImage::Release() noexcept
 
     if (m_memory)
     {
-        _aligned_free(m_memory);
+        std::free(m_memory);
         m_memory = nullptr;
     }
 
@@ -786,7 +786,7 @@ bool ScratchImage::IsAlphaAllOpaque() const noexcept
     }
     else
     {
-        ScopedAlignedArrayXMVECTOR scanline(static_cast<XMVECTOR*>(_aligned_malloc((sizeof(XMVECTOR)*m_metadata.width), 16)));
+        ScopedAlignedArrayXMVECTOR scanline(static_cast<XMVECTOR*>(AllocateVectorAligned((sizeof(XMVECTOR)*m_metadata.width))));
         if (!scanline)
             return false;
 

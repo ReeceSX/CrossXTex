@@ -92,11 +92,11 @@ namespace
             return E_FAIL;
 
         // Allocate temporary space (4 scanlines and 3 evaluated rows)
-        ScopedAlignedArrayXMVECTOR scanline(static_cast<XMVECTOR*>(_aligned_malloc((sizeof(XMVECTOR)*width * 4), 16)));
+        ScopedAlignedArrayXMVECTOR scanline(static_cast<XMVECTOR*>(AllocateVectorAligned((sizeof(XMVECTOR)*width * 4))));
         if (!scanline)
             return E_OUTOFMEMORY;
 
-        ScopedAlignedArrayFloat buffer(static_cast<float*>(_aligned_malloc(((sizeof(float) * (width + 2)) * 3), 16)));
+        ScopedAlignedArrayFloat buffer(static_cast<float*>(AllocateVectorAligned(((sizeof(float) * (width + 2)) * 3))));
         if (!buffer)
             return E_OUTOFMEMORY;
 
