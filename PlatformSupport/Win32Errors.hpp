@@ -1,10 +1,6 @@
 #pragma once
 
 using HRESULT = LONG;
-using WORD = int16_t;
-using DWORD = uint32_t;
-using UINT = uint32_t;
-using INT = int32_t;
 
 #define FACILITY_WIN32      7
 
