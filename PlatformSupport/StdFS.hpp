@@ -112,6 +112,7 @@ public:
         }
         if (!_stream.write(reinterpret_cast<const char *>(in), length))
         {
+            MakeTemp();
             return false;
         }
         return true;
