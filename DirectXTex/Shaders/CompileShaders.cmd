@@ -2,6 +2,8 @@
 rem Copyright (c) Microsoft Corporation. All rights reserved.
 rem Licensed under the MIT License.
 
+cp %1
+
 setlocal
 set error=0
 

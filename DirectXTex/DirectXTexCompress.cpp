@@ -20,6 +20,13 @@
 
 using namespace DirectX;
 
+
+#if defined(__clang__)
+    #define ALIGNAS(x) alignas(x)
+#else
+    #define ALGINAS(x) __declspec(align(x))
+#endif
+
 namespace
 {
     inline uint32_t GetBCFlags(_In_ TEX_COMPRESS_FLAGS compress) noexcept
@@ -104,7 +111,7 @@ namespace
         if (!DetermineEncoderSettings(result.format, pfEncode, blocksize, cflags))
             return HRESULT_FROM_WIN32(ERROR_NOT_SUPPORTED);
 
-        __declspec(align(16)) XMVECTOR temp[16];
+        ALIGNAS(16) XMVECTOR temp[16];
         const uint8_t *pSrc = image.pixels;
         const uint8_t *pEnd = image.pixels + image.slicePitch;
         const size_t rowPitch = image.rowPitch;
@@ -263,7 +270,7 @@ namespace
             assert(bytesLeft > 0);
             size_t bytesToRead = std::min<size_t>(rowPitch, size_t(bytesLeft));
 
-            __declspec(align(16)) XMVECTOR temp[16];
+            ALIGNAS(16) XMVECTOR temp[16];
             if (!_LoadScanline(&temp[0], pw, pSrc, bytesToRead, format))
                 fail = true;
 
@@ -441,7 +448,7 @@ namespace
             return HRESULT_FROM_WIN32(ERROR_NOT_SUPPORTED);
         }
 
-        __declspec(align(16)) XMVECTOR temp[16];
+        ALIGNAS(16) XMVECTOR temp[16];
         const uint8_t *pSrc = cImage.pixels;
         const size_t rowPitch = result.rowPitch;
         for (size_t h = 0; h < cImage.height; h += 4)
@@ -534,7 +541,7 @@ namespace DirectX
         // Scan blocks for non-opaque alpha
         static const XMVECTORF32 threshold = { { { 0.99f, 0.99f, 0.99f, 0.99f } } };
 
-        __declspec(align(16)) XMVECTOR temp[16];
+        ALIGNAS(16) XMVECTOR temp[16];
         const uint8_t *pPixels = cImage.pixels;
         for (size_t h = 0; h < cImage.height; h += 4)
         {

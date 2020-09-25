@@ -14,13 +14,15 @@
     #define __cdecl
 #endif 
 
+#include <cstdint>
+
 #if defined(_DXTX_NOWIN)
-    using LONG = size_t;
-    using HANDLE = size_t;
-    using WORD = int16_t;
-    using DWORD = uint32_t;
-    using UINT = uint32_t;
-    using INT = int32_t;
+    using LONG = std::size_t;
+    using HANDLE = std::size_t;
+    using WORD = std::int16_t;
+    using DWORD = std::uint32_t;
+    using UINT = std::uint32_t;
+    using INT = std::int32_t;
     
     #include "Win32DXG.hpp"
     #include "Win32Errors.hpp"
