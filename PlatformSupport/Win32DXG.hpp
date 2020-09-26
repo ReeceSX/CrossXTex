@@ -8,7 +8,9 @@
     Author: Reece
     Purpose: TBD
 ***/
-typedef enum DXGI_FORMAT {
+#pragma once
+
+enum DXGI_FORMAT {
 	DXGI_FORMAT_UNKNOWN,
 	DXGI_FORMAT_R32G32B32A32_TYPELESS,
 	DXGI_FORMAT_R32G32B32A32_FLOAT,
