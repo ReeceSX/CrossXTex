@@ -39,11 +39,12 @@ function genProject(path)
 		table.insert(projectFiles, path .. "/DirectXTex/DirectXTexCompress.cpp")
 	end
 	
-	local cmd = "\"" .. path .. "\\DirectXTex\\Shaders\\CompileShaders.cmd\" " .. "\"" .. path .. "\\DirectXTex\\Shaders";
-	print("fxc compile script", cmd)
+	local cmd = "\"%{wks.location}..\\" .. path .. "\\DirectXTex\\Shaders\\CompileShaders.cmd\" " .. "\"%{wks.location}..\\" .. path .. "\\DirectXTex\\Shaders\"";
+
 
 	if (_G.win32) then
-		buildcommands { cmd }
+		print("fxc compile script", cmd)
+		prebuildcommands { cmd }
 	end
 	
 	defines 
@@ -64,8 +65,8 @@ function genProject(path)
 	includedirs 
 	{
 		path .. "/DirectXTex",
-		path .. "/DirectXMath",
-		path .. "/PlatformSupport"
+		path .. "/../DirectXMath/Include",
+		path .. "/../PlatformSupport"
 	}
 
 end
