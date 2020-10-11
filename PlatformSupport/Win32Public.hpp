@@ -8,13 +8,14 @@
     Author: Reece
     Purpose: TBD
 ***/
- #pragma once
+#pragma once
 
 #if !defined(__cdecl)
     #define __cdecl
 #endif 
 
 #include <cstdint>
+#include <cstddef>
 
 #if defined(_DXTX_NOWIN)
     using LONG = std::size_t;
